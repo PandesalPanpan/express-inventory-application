@@ -119,3 +119,14 @@ export async function updateRoom(
         client.release();
     }
 }
+
+export async function deleteRoom(room_id) {
+    const { rows } = await pool.query(`
+        DELETE FROM rooms WHERE id = $1 RETURNING *`,
+        [room_id]
+    );
+    
+    if (!rows.length) throw new Error("Room not found");
+
+    return rows[0];
+}
