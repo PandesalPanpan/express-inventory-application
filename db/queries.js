@@ -174,3 +174,11 @@ export async function updateDepartment(department_id, name) {
 
     return rows[0];
 }
+
+export async function deleteDepartment(department_id) {
+    await pool.query(`
+        DELETE FROM departments
+        WHERE id = $1
+        `, [department_id])
+    return rowCount > 0;
+}
