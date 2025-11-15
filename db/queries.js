@@ -68,3 +68,57 @@ export async function getRoom(roomId) {
         `, [roomId]);
     return rows[0] || null;
 }
+
+export async function updateRoom(
+    room_id, room_number, capacity, department_id, room_types_ids, 
+) {
+    const client = await pool.connect();
+    try {
+        await client.query("BEGIN");
+
+        await client.query(`
+            UPDATE rooms
+            SET 
+                room_number = $2,
+                capacity = $3,
+                department_id = $4
+            WHERE id = $1
+            `, [room_id, room_number, capacity, department_id ?? null]);
+
+        if (room_types_ids !== undefined) {
+            if (!room_types_ids.length) {
+                // Remove all association
+                await client.query(`DELETE FROM rooms_room_types WHERE room_id = $1`, [room_id])
+            } else {
+                const uniqueIds = [...new Set(room_types_ids)];
+                
+                // Delete rows that did not match
+                await client.query(`
+                    DELETE FROM rooms_room_types
+                    WHERE room_id = $1
+                    AND room_type_id NOT (room_type_id = ANY($2))
+                    `, [room_id, uniqueIds]
+                );
+    
+                // Insert all missing association by using ON CONFLICT DO NOTHING to avoid duplicates
+                const insertValues = uniqueIds.map((_, index) => `($1, $${index + 2})`).join(', ');
+                await client.query(`
+                    INSERT INTO rooms_room_types (room_id, room_type_id)
+                    VALUES
+                    ${insertValues}
+                    ON CONFLICT DO NOTHING`, 
+                    [room_id, ...uniqueIds]
+                );
+            }
+
+        }
+    
+        await client.query("COMMIT");
+        return true;
+    } catch (err) {
+        await client.query("ROLLBACK");
+        throw err;
+    } finally {
+        client.release();
+    }
+}
