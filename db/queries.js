@@ -130,3 +130,18 @@ export async function deleteRoom(room_id) {
 
     return rows[0];
 }
+
+// Department Queries
+// 1. Create Department
+// 2. Get Department
+// 3. Get All Department
+// 4. Get All Rooms by Department
+// 5. Update Department
+// 6. Delete Department
+
+export async function getAllDepartments() {
+    const { rows } = await pool.query(`
+        SELECT * FROM departments
+        `);    
+    return rows;
+}
