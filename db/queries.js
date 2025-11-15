@@ -164,3 +164,13 @@ export async function createDepartment(name) {
     return rows[0];
 } 
 
+export async function updateDepartment(department_id, name) {
+    const { rows } = await pool.query(`
+        UPDATE departments
+        SET name = $2
+        WHERE id = $1
+        RETURNING *
+        `, [department_id, name]);
+
+    return rows[0];
+}
