@@ -154,3 +154,13 @@ export async function getDepartment(department_id) {
 
     return rows[0];
 }
+
+export async function createDepartment(name) {
+    const { rows } = await pool.query(`
+        INSERT INTO departments (name)
+        VALUES ($1)
+        RETURNING *
+        `, [name])
+    return rows[0];
+} 
+
