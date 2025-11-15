@@ -60,3 +60,11 @@ export async function createRoom(room_number, capacity, department_id, room_type
         client.release();
     }
 }
+
+export async function getRoom(roomId) {
+    const { rows } = await pool.query(`
+        SELECT * FROM rooms
+        WHERE id = $1
+        `, [roomId]);
+    return rows[0] || null;
+}
