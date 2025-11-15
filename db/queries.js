@@ -40,13 +40,12 @@ export async function createRoom(room_number, capacity, department_id, room_type
 
         if (room_types_ids && room_types_ids.length) {
             const uniques = [...new Set(room_types_ids)];
-            const values = uniques.map((_, index) => `($1, $${index + 2})`).join(', ');
 
             await client.query(
                 `INSERT INTO rooms_room_types (room_id, room_type_id)
-                VALUES ${values}
+                SELECT $1, id FROM room_types WHERE id = ANY($2)
                 ON CONFLICT DO NOTHING`,
-                [roomId, ...uniques]
+                [roomId, uniques]
             );
         }
 
@@ -96,18 +95,16 @@ export async function updateRoom(
                 await client.query(`
                     DELETE FROM rooms_room_types
                     WHERE room_id = $1
-                    AND room_type_id NOT (room_type_id = ANY($2))
+                    AND NOT (room_type_id = ANY($2))
                     `, [room_id, uniqueIds]
                 );
     
                 // Insert all missing association by using ON CONFLICT DO NOTHING to avoid duplicates
-                const insertValues = uniqueIds.map((_, index) => `($1, $${index + 2})`).join(', ');
                 await client.query(`
                     INSERT INTO rooms_room_types (room_id, room_type_id)
-                    VALUES
-                    ${insertValues}
+                    SELECT $1, id FROM room_types WHERE id = ANY($2)
                     ON CONFLICT DO NOTHING`, 
-                    [room_id, ...uniqueIds]
+                    [room_id, uniqueIds]
                 );
             }
 
