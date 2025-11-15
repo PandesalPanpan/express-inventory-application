@@ -145,3 +145,12 @@ export async function getAllDepartments() {
         `);    
     return rows;
 }
+
+export async function getDepartment(department_id) {
+    const { rows } = await pool.query(`
+        SELCT * FROM departments
+        WHERE id = $1`, [department_id]
+    );
+
+    return rows[0];
+}
