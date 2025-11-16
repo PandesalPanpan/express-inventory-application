@@ -2,8 +2,8 @@ import express from 'express';
 import path from 'node:path';
 import { exit } from 'node:process';
 import { fileURLToPath } from 'node:url';
-import roomRouter from './routes/roomRouter';
-import departmentRouter from './routes/departmentRouter';
+import roomRouter from './routes/roomRouter.js';
+import departmentRouter from './routes/departmentRouter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
