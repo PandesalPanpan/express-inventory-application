@@ -37,3 +37,10 @@ export async function updateDepartmentPost(req, res) {
 
     res.redirect('department', { department });
 }
+
+export async function deleteDepartment(req, res) {
+    const { department_id } = req.params;
+    await db.deleteDepartment(department_id);
+
+    res.redirect('/');
+}
