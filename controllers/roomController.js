@@ -24,4 +24,11 @@ export async function getRoom(req, res) {
     res.render('room', { room });
 }
 
+export async function updateRoomPost(req, res) {
+    const { room_id, room_number, capacity, department_id, room_types_ids } = req.body;
+    const room = await db.updateRoom(room_id, room_number, capacity, department_id, room_types_ids);    
+
+    res.render('room', { room });
+}
+
 
