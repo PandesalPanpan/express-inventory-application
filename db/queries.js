@@ -24,7 +24,7 @@ export async function getAllRooms() {
 
 // I have not tested this fully
 export async function createRoom(room_number, capacity, department_id, room_types_ids) {
-    const client = await pool.connect(); 
+    const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
@@ -69,7 +69,7 @@ export async function getRoom(roomId) {
 }
 
 export async function updateRoom(
-    room_id, room_number, capacity, department_id, room_types_ids, 
+    room_id, room_number, capacity, department_id, room_types_ids,
 ) {
     const client = await pool.connect();
     try {
@@ -90,7 +90,7 @@ export async function updateRoom(
                 await client.query(`DELETE FROM rooms_room_types WHERE room_id = $1`, [room_id])
             } else {
                 const uniqueIds = [...new Set(room_types_ids)];
-                
+
                 // Delete rows that did not match
                 await client.query(`
                     DELETE FROM rooms_room_types
@@ -98,18 +98,18 @@ export async function updateRoom(
                     AND NOT (room_type_id = ANY($2))
                     `, [room_id, uniqueIds]
                 );
-    
+
                 // Insert all missing association by using ON CONFLICT DO NOTHING to avoid duplicates
                 await client.query(`
                     INSERT INTO rooms_room_types (room_id, room_type_id)
                     SELECT $1, id FROM room_types WHERE id = ANY($2)
-                    ON CONFLICT DO NOTHING`, 
+                    ON CONFLICT DO NOTHING`,
                     [room_id, uniqueIds]
                 );
             }
 
         }
-    
+
         await client.query("COMMIT");
         return true;
     } catch (err) {
@@ -125,7 +125,7 @@ export async function deleteRoom(room_id) {
         DELETE FROM rooms WHERE id = $1 RETURNING *`,
         [room_id]
     );
-    
+
     if (!rows.length) throw new Error("Room not found");
 
     return rows[0];
@@ -142,7 +142,7 @@ export async function deleteRoom(room_id) {
 export async function getAllDepartments() {
     const { rows } = await pool.query(`
         SELECT * FROM departments
-        `);    
+        `);
     return rows;
 }
 
@@ -162,7 +162,7 @@ export async function createDepartment(name) {
         RETURNING *
         `, [name])
     return rows[0];
-} 
+}
 
 export async function updateDepartment(department_id, name) {
     const { rows } = await pool.query(`
@@ -176,7 +176,7 @@ export async function updateDepartment(department_id, name) {
 }
 
 export async function deleteDepartment(department_id) {
-    await pool.query(`
+    const { rowCount } = await pool.query(`
         DELETE FROM departments
         WHERE id = $1
         `, [department_id])
