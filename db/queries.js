@@ -8,14 +8,16 @@ export async function getAllRooms() {
             r.id, 
             r.room_number, 
             r.capacity, 
-            r.department_id,
+            d.name as department_name,
             string_agg(DISTINCT rt.name, ', ' ORDER BY rt.name) AS room_types
         FROM rooms as r
+        LEFT JOIN departments as d
+        ON (r.department_id = d.id)
         LEFT JOIN rooms_room_types as rrt
         ON (rrt.room_id = r.id)
         LEFT JOIN room_types as rt
         ON (rt.id = rrt.room_type_id)
-        GROUP BY r.id, r.room_number, r.capacity, r.department_id
+        GROUP BY r.id, r.room_number, r.capacity, d.name
         ORDER BY r.room_number;
         `);
 
