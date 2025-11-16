@@ -19,3 +19,10 @@ export async function getAllDepartments(req, res) {
 
     res.render('departments', { departments });
 }
+
+export async function updateDepartmentPost(req, res) {
+    const { department_id, name } = req.body;
+    const department = await db.updateDepartment(department_id, name);
+
+    res.render('department', { department });
+}
