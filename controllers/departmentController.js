@@ -13,3 +13,9 @@ export async function getRoomsByDepartment(req, res) {
 
     res.render('department-rooms', { rooms });
 }
+
+export async function getAllDepartments(req, res) {
+    const departments = await db.getAllDepartments();
+
+    res.render('departments', { departments });
+}
