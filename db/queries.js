@@ -182,3 +182,12 @@ export async function deleteDepartment(department_id) {
         `, [department_id])
     return rowCount > 0;
 }
+
+export async function getRoomsByDepartment(department_id) {
+    const { rows } = await pool.query(`
+        SELECT * FROM rooms as r
+        WHERE department_id = $1
+        `, [department_id]);
+
+    return rows;
+}
