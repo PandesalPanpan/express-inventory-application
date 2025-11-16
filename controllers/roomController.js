@@ -6,3 +6,8 @@ export async function getAllRooms(req, res) {
     res.render('index', { rooms });
 }
 
+export async function createRoom(req, res) {
+    res.render('create-room');
+}
+
+
