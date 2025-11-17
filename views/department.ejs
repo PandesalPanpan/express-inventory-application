@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <%- include('partials/navigation.ejs') %>
+        <form action="/department/<%=department.id%>/update" method="post">
+            <h1>View/Edit Department</h1>
+            <label for="name">Department name <input name="name" type="text" value="<%=department.name%>"></label>
+            <button type="submit">Save Department</button>
+            <button type="button" onclick="history.back()">Go Back</button>
+        </form>
+</body>
+
+</html>

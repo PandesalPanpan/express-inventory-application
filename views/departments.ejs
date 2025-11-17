@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <%- include('partials/navigation.ejs') %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Department Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.departments) { %>
+                    <% departments.map((department)=> { %>
+                        <tr>
+                            <td>
+                                <%= department.name %>
+                            </td>
+                            <td>
+                                <a href="/department/<%=department.id%>"><button>View/Edit</button></a>
+                                <a href="/department/<%=department.id%>/rooms"><button>View Rooms</button></a>
+                                <button class="delete-department" data-id="<%=department.id%>">Delete Department</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <% } %>
+            </tbody>
+        </table>
+</body>
+<script>
+document.addEventListener('click', async (event) => {
+    if (!event.target.matches('.delete-department')) return;
+
+    if (!confirm('Delete this department?')) return;
+
+    const id = event.target.dataset.id;
+    const res = await fetch(`/department/${id}/delete`, {method: 'DELETE'});
+    if (res.status === 204) {
+        location.reload();
+    } else {
+        alert('Delete Failed');
+    }
+})
+</script>
+
+</html>

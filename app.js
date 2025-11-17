@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'node:path';
 import { exit } from 'node:process';
 import { fileURLToPath } from 'node:url';
+import roomRouter from './routes/roomRouter.js';
+import departmentRouter from './routes/departmentRouter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,10 +17,8 @@ app.set("view engine", "ejs");
 app.use(express.static(assetsPath));
 app.use(express.urlencoded({ extended:true }));
 
-app.use('/', (req, res) => {
-    res.send("Hello World");
-})
-
+app.use('/', roomRouter);
+app.use('/department', departmentRouter);
 
 app.listen(PORT, (err) => {
     if (err) {

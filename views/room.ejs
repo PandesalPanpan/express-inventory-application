@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <%- include('partials/navigation.ejs') %>
+    <form action="/room/<%=room.id%>/update" method="post">
+        <h1>Room View/Edit</h1>
+        <label for="room_number">Room Number: 
+            <input name="room_number" type="text" value="<%=room.room_number%>">
+        </label>
+        <label for="capacity">Capacity: 
+            <input name="capacity" type="text" value="<%=room.capacity%>">
+        </label>
+        <label for="departmentId">Department: 
+            <% if (locals.departments) { %>
+                <select name="departmentId">
+                    <option value="">Choose Department</option>
+                    <% departments.map((department) => { %>
+                        <option value="<%=department.id%>" <%=(department.id === room.department_id) ? 'selected' : ''%>><%=department.name%></option>
+                    <% }) %>
+                </select>
+            <% } %>
+        </label>
+        <div class="room-types-form">
+            <p>Select Room Types: </p>
+            <% if (locals.room_types) { %>
+                <% room_types.map((room_type) => { %>
+                    <input 
+                    type="checkbox" 
+                    name="room_types_ids[]" 
+                    value="<%=room_type.id%>" 
+                    id="roomtype-<%=room_type.id%>"
+                    <%= room.room_type_ids.includes(room_type.id) ? 'checked' : '' %>
+                    >
+                    <label for="roomtype-<%=room_type.id%>"><%=room_type.name%></label><br>
+                <% }) %>
+            <% } %>
+        </div>
+        <button type="submit">Save</button>
+        <a href="/">Cancel</a>
+    </form>
+</body>
+
+</html>
