@@ -102,31 +102,29 @@ export async function updateRoom(
             WHERE id = $1
             `, [room_id, room_number, capacity, department_id ?? null]);
 
-        if (room_types_ids !== undefined) {
-            if (!room_types_ids.length) {
-                // Remove all association
-                await client.query(`DELETE FROM rooms_room_types WHERE room_id = $1`, [room_id])
-            } else {
-                const uniqueIds = [...new Set(room_types_ids)];
+        if (!room_types_ids) {
+            // Remove all association
+            await client.query(`DELETE FROM rooms_room_types WHERE room_id = $1`, [room_id])
+        } else {
+            const uniqueIds = [...new Set(room_types_ids)];
 
-                // Delete rows that did not match
-                await client.query(`
+            // Delete rows that did not match
+            await client.query(`
                     DELETE FROM rooms_room_types
                     WHERE room_id = $1
                     AND NOT (room_type_id = ANY($2))
                     `, [room_id, uniqueIds]
-                );
+            );
 
-                // Insert all missing association by using ON CONFLICT DO NOTHING to avoid duplicates
-                await client.query(`
+            // Insert all missing association by using ON CONFLICT DO NOTHING to avoid duplicates
+            await client.query(`
                     INSERT INTO rooms_room_types (room_id, room_type_id)
                     SELECT $1, id FROM room_types WHERE id = ANY($2)
                     ON CONFLICT DO NOTHING`,
-                    [room_id, uniqueIds]
-                );
-            }
-
+                [room_id, uniqueIds]
+            );
         }
+
 
         await client.query("COMMIT");
         return true;
