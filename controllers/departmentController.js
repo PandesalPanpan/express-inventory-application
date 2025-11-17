@@ -10,7 +10,7 @@ export async function getDepartment(req, res) {
 export async function getRoomsByDepartment(req, res) {
     const department_id = req.params.departmentId;
     const rooms = await db.getRoomsByDepartment(department_id);
-    
+
     res.render('department-rooms', { rooms });
 }
 
@@ -38,8 +38,7 @@ export async function updateDepartmentPost(req, res) {
 }
 
 export async function deleteDepartment(req, res) {
-    const { department_id } = req.params;
+    const department_id = req.params.departmentId;
     await db.deleteDepartment(department_id);
-
-    res.redirect('/');
+    res.sendStatus(204)    
 }
