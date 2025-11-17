@@ -21,13 +21,12 @@ export async function getAllDepartments(req, res) {
 }
 
 export async function createDepartmentGet(req, res) {
-    res.render('department-create');
+    res.render('create-department');
 }
 
 export async function createDepartmentPost(req, res) {
     const { name } = req.body;
     const department = await db.createDepartment(name);
-
     res.render('department', { department });
 }
 
