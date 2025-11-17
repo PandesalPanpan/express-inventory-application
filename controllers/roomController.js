@@ -7,14 +7,17 @@ export async function getAllRooms(req, res) {
 }
 
 export async function createRoom(req, res) {
-    res.render('create-room');
+    const departments = await db.getAllDepartments();
+    const room_types = await db.getAllRoomTypes();
+    res.render('create-room', { departments, room_types });
 }
 
 export async function createRoomPost(req, res) {
-    const { room_number, capacity, department_id, room_types_ids } = req.body;
-    const room = await db.createRoom(room_number, capacity, department_id, room_types_ids);
-
-    res.render('room', { room });
+    const { room_number, capacity, department_id, room_types_ids} = req.body;
+    const roomId = await db.createRoom(room_number, capacity, department_id ?? null, room_types_ids ?? null);
+    console.log(roomId);
+    // TODO:
+    // res.redirect(`/room/${roomId}`);
 }
 
 export async function getRoom(req, res) {
@@ -26,7 +29,7 @@ export async function getRoom(req, res) {
 
 export async function updateRoomPost(req, res) {
     const { room_id, room_number, capacity, department_id, room_types_ids } = req.body;
-    const room = await db.updateRoom(room_id, room_number, capacity, department_id, room_types_ids);    
+    const room = await db.updateRoom(room_id, room_number, capacity, department_id, room_types_ids);
 
     res.render('room', { room });
 }
