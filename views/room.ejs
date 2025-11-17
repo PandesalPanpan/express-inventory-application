@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    <%- include('partials/navigation.ejs') %>
     <form action="/room/<%=room.id%>/update" method="post">
         <h1>Room View/Edit</h1>
         <label for="room_number">Room Number: 

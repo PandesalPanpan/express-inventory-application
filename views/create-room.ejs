@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    <%- include('partials/navigation.ejs') %>
     <form action="/room/create" method="post">
         <h1>Create Room</h1>
         <label for="room_number">Room Number: <input name="room_number" type="text"></label>
