@@ -27,10 +27,13 @@ export async function getRoom(req, res) {
 }
 
 export async function updateRoomPost(req, res) {
-    const { room_id, room_number, capacity, department_id, room_types_ids } = req.body;
-    const room = await db.updateRoom(room_id, room_number, capacity, department_id, room_types_ids);
+    const { roomId } = req.params;
+    const { room_number, capacity, room_types_ids } = req.body;
+    const departmentId = req.body.departmentId === '' ? null : Number(req.body.departmentId);
 
-    res.render('room', { room });
+    await db.updateRoom(roomId, room_number, capacity, departmentId, room_types_ids ?? null);
+
+    res.redirect(`/room/${roomId}`);
 }
 
 export async function deleteRoom(req, res) {
