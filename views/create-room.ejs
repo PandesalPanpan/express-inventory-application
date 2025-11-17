@@ -10,6 +10,7 @@
 
 <body>
     <form action="/room/create" method="post">
+        <h1>Create Room</h1>
         <label for="room_number">Room Number: <input name="room_number" type="text"></label>
         <label for="capacity">Capacity: <input name="capacity" type="text"></label>
         <label for="departmentId">Department: 
@@ -32,6 +33,7 @@
             <% } %>
         </div>
         <button type="submit">Create Room</button>
+        <a href="/">Cancel</a>
     </form>
 </body>
 
