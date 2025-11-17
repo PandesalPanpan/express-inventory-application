@@ -70,7 +70,7 @@ export const updateRoomPost = [
     validateRoom,
     async (req, res) => {
         const { roomId } = req.params;
-        const { room_number, capacity, room_types_ids } = req.body;
+        const { room_number, capacity, departmentId, room_types_ids } = req.body;
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
