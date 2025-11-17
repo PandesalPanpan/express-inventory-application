@@ -1,4 +1,10 @@
+import { body, validationResult } from 'express-validator';
 import * as db from '../db/queries.js';
+
+const validateDepartment = [
+    body("name").trim()
+    .isLength({min: 5}).withMessage("Department name must be atleast 5 characters.")
+]
 
 export async function getDepartment(req, res) {
     const department_id = req.params.departmentId;
@@ -24,11 +30,22 @@ export async function createDepartmentGet(req, res) {
     res.render('create-department');
 }
 
-export async function createDepartmentPost(req, res) {
-    const { name } = req.body;
-    const department = await db.createDepartment(name);
-    res.render('department', { department });
-}
+export const createDepartmentPost = [
+    validateDepartment,
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+
+            return res.status(400).render('create-department', {
+                errors: errors.array()
+            })
+        }
+
+        const { name } = req.body;
+        const department = await db.createDepartment(name);
+        res.render('department', { department });
+    }
+]
 
 export async function updateDepartmentPost(req, res) {
     const { name } = req.body;
