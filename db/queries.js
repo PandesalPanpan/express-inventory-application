@@ -64,8 +64,24 @@ export async function createRoom(room_number, capacity, department_id, room_type
 
 export async function getRoom(roomId) {
     const { rows } = await pool.query(`
-        SELECT * FROM rooms
-        WHERE id = $1
+        SELECT 
+            r.id, 
+            r.room_number, 
+            r.capacity, 
+            d.id as department_id,
+            d.name as department_name,
+            string_agg(DISTINCT rt.name, ', ' ORDER BY rt.name) AS room_types,
+            array_agg(rt.id ORDER BY rt.name) AS room_type_ids
+        FROM rooms as r
+        LEFT JOIN departments as d
+        ON (r.department_id = d.id)
+        LEFT JOIN rooms_room_types as rrt
+        ON (rrt.room_id = r.id)
+        LEFT JOIN room_types as rt
+        ON (rt.id = rrt.room_type_id)
+        WHERE r.id = $1
+        GROUP BY r.id, r.room_number, r.capacity, d.name, d.id
+        ORDER BY r.room_number;
         `, [roomId]);
     return rows[0] || null;
 }
@@ -150,7 +166,7 @@ export async function getAllDepartments() {
 
 export async function getDepartment(department_id) {
     const { rows } = await pool.query(`
-        SELCT * FROM departments
+        SELECT * FROM departments
         WHERE id = $1`, [department_id]
     );
 
