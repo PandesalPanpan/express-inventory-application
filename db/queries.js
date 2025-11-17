@@ -193,3 +193,11 @@ export async function getRoomsByDepartment(department_id) {
 
     return rows;
 }
+
+export async function getAllRoomTypes() {
+    const { rows } = await pool.query(`
+        SELECT id, name FROM room_types;
+        `);
+
+    return rows;
+}
