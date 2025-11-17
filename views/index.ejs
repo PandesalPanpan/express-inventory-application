@@ -15,6 +15,7 @@
                 <th>Capacity</th>
                 <th>Department</th>
                 <th>Room Types</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,9 @@
                         <td><%= room.capacity %></td>
                         <td><%= room.department_name %></td>
                         <td><%= room.room_types %></td>
+                        <td>
+                            <a href="/room/<%=room.id%>"><button>View/Edit</button></a>
+                        </td>
                     </tr>
                 <% }) %>
             <% } %>
