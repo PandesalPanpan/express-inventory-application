@@ -3,7 +3,7 @@ import * as db from '../db/queries.js';
 
 const validateDepartment = [
     body("name").trim()
-    .isLength({min: 5}).withMessage("Department name must be atleast 5 characters.")
+        .isLength({ min: 5 }).withMessage("Department name must be atleast 5 characters.")
 ]
 
 export async function getDepartment(req, res) {
@@ -47,15 +47,26 @@ export const createDepartmentPost = [
     }
 ]
 
-export async function updateDepartmentPost(req, res) {
-    const { name } = req.body;
-    const department_id = req.params.departmentId;
-    await db.updateDepartment(department_id, name);
-    res.redirect(`/department/${department_id}`);
-}
+export const updateDepartmentPost = [
+    validateDepartment,
+    async (req, res) => {
+        const department_id = req.params.departmentId;
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const department = await db.getDepartment(department_id);
+
+            res.render('department', { department, errors: errors.array() })
+        }
+
+        const { name } = req.body;
+        await db.updateDepartment(department_id, name);
+        res.redirect(`/department/${department_id}`);
+    }
+]
 
 export async function deleteDepartment(req, res) {
     const department_id = req.params.departmentId;
     await db.deleteDepartment(department_id);
-    res.sendStatus(204)    
+    res.sendStatus(204)
 }
