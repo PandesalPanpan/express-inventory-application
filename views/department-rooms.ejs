@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('partials/navigation.ejs') %>
+    <h1>Department: <%=rooms[0].department_name%></h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Capacity</th>
+                <th>Department</th>
+                <th>Room Types</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (locals.rooms) { %>
+                <% rooms.map((room) => { %>
+                    <tr>
+                        <td><%= room.room_number %></td>
+                        <td><%= room.capacity %></td>
+                        <td><%= room.department_name %></td>
+                        <td><%= room.room_types %></td>
+                        <td>
+                            <a href="/room/<%=room.id%>"><button>View/Edit</button></a>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+</html>
