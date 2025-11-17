@@ -31,10 +31,10 @@ export async function createDepartmentPost(req, res) {
 }
 
 export async function updateDepartmentPost(req, res) {
-    const { department_id, name } = req.body;
-    const department = await db.updateDepartment(department_id, name);
-
-    res.redirect('department', { department });
+    const { name } = req.body;
+    const department_id = req.params.departmentId;
+    await db.updateDepartment(department_id, name);
+    res.redirect(`/department/${department_id}`);
 }
 
 export async function deleteDepartment(req, res) {
