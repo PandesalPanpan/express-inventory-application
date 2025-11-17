@@ -45,16 +45,16 @@ export const createRoomPost = [
             const departments = await db.getAllDepartments();
             const room_types = await db.getAllRoomTypes();
 
-            return res.status(400).render("create-room", { 
+            return res.status(400).render("create-room", {
                 errors: errors.array(),
                 departments,
-                room_types 
+                room_types
             });
         }
 
-    const { room_number, capacity, department_id, room_types_ids } = req.body;
-    const roomId = await db.createRoom(room_number, capacity, department_id ?? null, room_types_ids ?? null);
-    res.redirect(`/room/${roomId}`);
+        const { room_number, capacity, department_id, room_types_ids } = req.body;
+        const roomId = await db.createRoom(room_number, capacity, department_id ?? null, room_types_ids ?? null);
+        res.redirect(`/room/${roomId}`);
     }
 ]
 
@@ -66,15 +66,26 @@ export async function getRoom(req, res) {
     res.render('room', { room, departments, room_types });
 }
 
-export async function updateRoomPost(req, res) {
-    const { roomId } = req.params;
-    const { room_number, capacity, room_types_ids } = req.body;
-    const departmentId = req.body.departmentId === '' ? null : Number(req.body.departmentId);
+export const updateRoomPost = [
+    validateRoom,
+    async (req, res) => {
+        const { roomId } = req.params;
+        const { room_number, capacity, room_types_ids } = req.body;
 
-    await db.updateRoom(roomId, room_number, capacity, departmentId, room_types_ids ?? null);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const room = await db.getRoom(roomId);
+            const departments = await db.getAllDepartments();
+            const room_types = await db.getAllRoomTypes();
 
-    res.redirect(`/room/${roomId}`);
-}
+            return res.render('room', { errors: errors.array(), room, departments, room_types })
+        }
+
+        await db.updateRoom(roomId, room_number, capacity, departmentId, room_types_ids ?? null);
+
+        res.redirect(`/room/${roomId}`);
+    }
+]
 
 export async function deleteRoom(req, res) {
     const room_id = req.params.roomId;
