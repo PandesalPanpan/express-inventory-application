@@ -28,6 +28,7 @@
                         <td><%= room.room_types %></td>
                         <td>
                             <a href="/room/<%=room.id%>"><button>View/Edit</button></a>
+                            <button class="delete-room" data-id="<%=room.id%>" type="button">Delete Room</button>
                         </td>
                     </tr>
                 <% }) %>
@@ -35,4 +36,19 @@
         </tbody>
     </table>
 </body>
+<script>
+    document.addEventListener('click', async (event) => {
+    if (!event.target.matches('.delete-room')) return;
+
+    if (!confirm('Delete this room?')) return;
+
+    const id = event.target.dataset.id;
+    const res = await fetch(`/room/${id}/delete`, {method: 'DELETE'});
+    if (res.status === 204) {
+        location.reload();
+    } else {
+        alert('Delete Failed');
+    }
+})
+</script>
 </html>

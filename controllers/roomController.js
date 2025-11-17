@@ -37,10 +37,10 @@ export async function updateRoomPost(req, res) {
 }
 
 export async function deleteRoom(req, res) {
-    const { room_id } = req.body;
+    const room_id = req.params.roomId;
     await db.deleteRoom(room_id);
-
-    res.redirect('/');
+    
+    res.sendStatus(204);
 }
 
 
