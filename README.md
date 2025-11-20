@@ -2,6 +2,8 @@
 
 Small classroom inventory CRUD app (Odin Project). Manage Departments, Rooms and Room Types with full Create / Read / Update / Delete flows and a many‑to‑many relation between rooms and room types.
 
+Website: https://express-inventory-application-lukv.onrender.com
+
 Quick start
 - Requirements: Node.js, npm, PostgreSQL
 - Copy or create .env with DATABASE_URL (and optionally PORT)
